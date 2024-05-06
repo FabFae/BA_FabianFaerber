@@ -93,7 +93,6 @@ class MainWindow(QtWidgets.QMainWindow):
                         self.starting_height_spin.setValue(file_data["starting_height"])
                     else:
                         self.starting_height_spin.setValue(file_data["starting_height"])
-                        # todo: hier noch den case abfangen, dass das letzte Ausgewählt war
             self.update_info()
 
         except FileNotFoundError:
