@@ -122,14 +122,14 @@ class ImageMaker:
         self.img_width = img_size
         self.camera = None
 
-        self.table_rotations = table_rotations  # todo: korrekt implementieren.
+        self.table_rotations = table_rotations  
 
         self.num_leds = 90  # Anzahl LEDs am LED-Streifen
         self.leds_used = 67  # Anzahl der verwendeten LEDs
 
         self.height_levels = height_levels
         self.current_horizontal = -153
-        self.current_vertical = 0  # todo: 140 -> 100
+        self.current_vertical = 0  
         self.current_height_level = 0
 
         self.pixels = neopixel.NeoPixel(board.D18, self.num_leds, brightness=1)  # setup des LED-Streifens
