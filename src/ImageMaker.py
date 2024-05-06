@@ -230,7 +230,6 @@ class ImageMaker:
         return camera
 
     def take_picture(self):
-        # todo: immer in der Angegebenen Auflösung
         time.sleep(.5)  # um Wackeln der Kamera zu vermeiden
 
         # Bild aufnehmen und Kamera stoppen
