@@ -4,7 +4,7 @@
 Fabian Färber
 
 ## Über dieses Repository
-Dieses Repository enthält die Arbeiten und den Quellcode, die im Rahmen der Bachelorarbeit von Fabian Färber entwickelt wurden. Das Hauptziel der Arbeit war der Entwurf und die Realisierung eines Prototypen, der in der Lage ist, Objekte auf einer Drehscheibe aus verschiedenen Blickwinkeln, Kamerapositionen und Beleuchtungswinkeln zu fotografieren. Diese Fotografien sollen anschließend verwendet werden, um gelabelte Daten für das Training von neuronalen Netzen zu erstellen.
+Dieses Repository enthält die Arbeiten und den Quellcode, die im Rahmen der Bachelorarbeit von Fabian Färber entwickelt wurden. Das Hauptziel der Arbeit war der Entwurf und die Realisierung eines Prototypen, der in der Lage ist, Objekte auf einer Drehscheibe aus verschiedenen Blickwinkeln, Kamerapositionen und Beleuchtungswinkeln automatisiert zu fotografieren und die Aufnahmen zu labeln. Diese Trainingsdaten sollen anschließend verwendet werden, um neuronale Netze zu trainieren.
 
 ## Inhalt des Repositories
 - **Sourcecode**: Der gesamte Quellcode, um den Prototypen zu steuern und die gewünschten Fotos zu schießen.
