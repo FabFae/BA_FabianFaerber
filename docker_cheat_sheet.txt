@@ -1,0 +1,37 @@
+
+docker run --name FabianFaerber_BA --gpus all --ipc=host --ulimit memlock=-1 --ulimit stack=67108864 -p 8080:8080 -v /home/faerber/ML_training/:/workspace/ML_training -it nvcr.io/nvidia/tensorflow:22.04-tf2-py3 /bin/bash
+docker restart FabianFaerber_BA
+
+docker
+---------------------------------------------------------------------------------------------------------------------
+jupyter notebook --ip 0.0.0.0 --port=8080 --no-browser --allow-root
+---------------------------------------------------------------------------------------------------------------------
+Server: 10.28.229.17
+
+http://10.28.229.17:8080/?token=d361db4e611ac293d8e1bdea990af4bd723c64d8961a743e
+
+faerber@10.28.229.17
+ssh -N -L 8080:localhost:8080 faerber@10.28.229.17 -p22
+
+---------------------------------------------------------------------------------------------------------------------
+pip install keras_tuner
+pip install optuna
+pip install ipywidgets
+pip install tk
+apt-get update
+apt-get install xvfb
+
+git submodule update --init --recursive
+
+
+Parameter
+10: {'batch_size': 16, 'optimizer': 'Nadam', 'block1filters': 1222, 'block2filters': 1383, 'dense_neurons': 840, 'learning_rate': 0.00035106144655108523, 'dropout_rate': 0.4933042801904892, 'use_bias_in_linear': False}
+
+Epoch 33/250
+75/75 [==============================] - ETA: 0s - loss: 0.0671 - custom_mae: 0.1907
+Epoch 33: val_custom_mae did not improve from 0.11507
+Restoring model weights from the end of the best epoch: 13.
+Epoch 32 ended on 17.04.2024 - 15:32:03
+75/75 [==============================] - 2s 31ms/step - loss: 0.0671 - custom_mae: 0.1907 - val_loss: 0.0263 - val_custom_mae: 0.1220 - lr: 3.5106e-08
+Epoch 33: early stopping
+Time taken: 0:01:36.379863
