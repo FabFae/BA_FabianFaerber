@@ -21,7 +21,7 @@ STEPS_PER_DEGREE_HORIZONTAL = 100
 OVR_STOP = b'OVR_STOP\r\n'
 OVR_LOADPREF = b'OVR_LOADPREF\r\n'
 OVR_SAVEPREF = b'OVR_SAVEPREF\r\n'
-OVR_SETSTEPS_005 = b'OVR_SETSTEPS_005\r\n'
+OVR_SETSTEPS_005 = b'OVR_SETSTEPS_005\r\n'  # Annahme: Dieser Befehl setzt 72° Schritte
 OVR_SHOOTTURN_000 = b'OVR_SHOOTTURN_000\r\n'
 OVR_STEPSHOOT_002 = b'OVR_STEPSHOOT_002\r\n'
 OVR_START_001 = b'OVR_START_001\r\n'
@@ -62,16 +62,13 @@ def move_clockwise(degrees: int):
     for i in range(degrees * STEPS_PER_DEGREE_VERTICAL):
         rotate_motor(horizontal=True, invert_direction=True)
 
-
 def move_counter_clockwise(degrees: int):
     for i in range(degrees * STEPS_PER_DEGREE_VERTICAL):
         rotate_motor(horizontal=True)
 
-
-def next_azimut(degrees: int):
+def move_up(degrees: int):
     for i in range(degrees * STEPS_PER_DEGREE_HORIZONTAL):
         rotate_motor(horizontal=False)
-
 
 def move_down(degrees: int):
     for i in range(degrees * STEPS_PER_DEGREE_HORIZONTAL):
@@ -112,7 +109,7 @@ class ImageMaker:
         self.num_samples = num_samples
 
         self.labels_file_name = "labels.csv"
-        self.details_file_name = "details.csv"
+        self.detail_file_name = "details.csv"
         self.metadata_file_name = "metadata.json"
 
         self.position_index = start_index
@@ -122,14 +119,14 @@ class ImageMaker:
         self.img_width = img_size
         self.camera = None
 
-        self.table_rotations = table_rotations  
+        self.table_rotations = table_rotations
 
         self.num_leds = 90  # Anzahl LEDs am LED-Streifen
         self.leds_used = 67  # Anzahl der verwendeten LEDs
 
         self.height_levels = height_levels
         self.current_horizontal = -153
-        self.current_vertical = 0  
+        self.current_vertical = 0
         self.current_height_level = 0
 
         self.pixels = neopixel.NeoPixel(board.D18, self.num_leds, brightness=1)  # setup des LED-Streifens
@@ -146,29 +143,35 @@ class ImageMaker:
                                  parity='N',
                                  stopbits=1,
                                  timeout=1)
-        self.setup_stage()
+        if self.table_rotations > 0:
+            print("run setup_stage()")
+            self.setup_stage()
         self.go_to_starting_height(starting_height)
 
-        # self.light_positions = [[-140, 30.19, 53]]
+
+        #self.light_positions = [[-140, 30.19, 53]]
         print("Light Positions:")
-        print(self.light_positions)
+        print(self.light_positions)               
+        
 
-    def setup_stage(self):
+       
+    def setup_stage(self):                
         # Laden der aktuell gespeicherten Einstellungen
-        self.send_command_to_stage_on_air(OVR_LOADPREF)
-        # Festlegen der Schritte (72° pro Schritt da 360/5 = 72)
-        self.send_command_to_stage_on_air(OVR_SETSTEPS_005)
+        self.send_command(OVR_LOADPREF)
+        # Festlegen der Schritte (72° pro Schritt)
+        self.send_command(OVR_SETSTEPS_005)
         # Rotationssinn festlegen (im Uhrzeigersinn)
-        self.send_command_to_stage_on_air(OVR_SHOOTTURN_000)
+        self.send_command(OVR_SHOOTTURN_000)
         # Betriebsmodus auf STOPSHOOT setzen
-        self.send_command_to_stage_on_air(OVR_STEPSHOOT_002)
+        self.send_command(OVR_STEPSHOOT_002)
         # Speichere die Einstellungen auf der Vorrichtung
-        self.send_command_to_stage_on_air(OVR_SAVEPREF)
+        self.send_command(OVR_SAVEPREF)
         # Starte die automatische Positionierung
-        self.send_command_to_stage_on_air(OVR_START_001)
-
+        self.send_command(OVR_START_001)
+        
         print("stage-setup complete")
-
+        
+   
     def go_to_starting_height(self, steps_up):
         if self.height_levels - 1 > 0:
             dist_per_height_lvl = int(140 / (self.height_levels - 1))
@@ -178,7 +181,7 @@ class ImageMaker:
         print(f"distance per height level: {dist_per_height_lvl}")
 
         for i in range(steps_up):
-            next_azimut(dist_per_height_lvl)
+            move_up(dist_per_height_lvl)
             print("one lvl up")
         self.current_height_level = steps_up
         print(f"current height level: {self.current_height_level}")
@@ -205,17 +208,17 @@ class ImageMaker:
             self.ser.open()
 
         try:
-            # Befehle senden: Rotation um 72° durchführen 
-            self.send_command_to_stage_on_air(OVR_GOON)
+            # Befehle senden: Rotation um definierten Winkel durchführen 
+            self.send_command(OVR_GOON)
             time.sleep(.5)  # Wartezeit abhängig von der Rotationsgeschwindigkeit
 
         finally:
             # Schließe die serielle Verbindung, wenn du fertig bist
-            # self.ser.close()
+            #self.ser.close()
             pass
 
     # Funktion, um Befehle an die Stage zu senden
-    def send_command_to_stage_on_air(self, command):
+    def send_command(self, command):
         self.ser.write(command)
         response = self.ser.readline()
         print(response)
@@ -238,16 +241,15 @@ class ImageMaker:
         # Holen Sie sich den aktuellen Zeitstempel mit Millisekundengenauigkeit
         timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S-%f')[:-3]  # Millisekunden auf 3 Stellen gekürzt
 
-        # file_name_big = f"big/img_{timestamp}.png"
-        # big_path = os.path.join(self.folder_path, file_name_big)
+        file_name_big = f"big/img_{timestamp}.png"
+        big_path = os.path.join(self.folder_path, file_name_big)
 
         file_name_small = f"img_{timestamp}.png"
         small_path = os.path.join(self.folder_path, file_name_small)
 
+        # Bild spiegeln und speichern
         flipped_image = Image.fromarray(image).transpose(Image.FLIP_LEFT_RIGHT).transpose(Image.FLIP_TOP_BOTTOM)
-
-        # speichern des Bildes in großer Auflösung
-        # flipped_image.save(big_path)
+        flipped_image.save(big_path)
 
         # Verkleinern und speichern
         small_image = flipped_image.resize((224, 224))
@@ -280,25 +282,25 @@ class ImageMaker:
             # Die Datei existiert nicht, also erstellen Sie sie
             with open(file_path, 'w') as file:
                 # Optional: Schreiben Sie den Header der CSV-Datei
-                file.write('Filename,S_x,S_y\n')
+                file.write('FileName,S_x,S_y\n')
             print(f'Die Datei {file_path} wurde erstellt.')
         else:
             print(f'Die Datei {file_path} existiert bereits.')
 
     def create_details_file(self):
-        file_path = os.path.join(self.folder_path, self.details_file_name)
+        file_path = os.path.join(self.folder_path, self.detail_file_name)
         # Überprüfen Sie, ob die Datei bereits existiert
         if not os.path.exists(file_path):
             # Die Datei existiert nicht, also erstellen Sie sie
             with open(file_path, 'w') as file:
                 # Optional: Schreiben Sie den Header der CSV-Datei
-                file.write('Filename,NumLED,Index,KameraHeight\n')
+                file.write('FileName,NumLED,Index,KameraHeight\n')
             print(f'Die Datei {file_path} wurde erstellt.')
         else:
             print(f'Die Datei {file_path} existiert bereits.')
 
     def save_details(self, img_name: str):
-        details_path = os.path.join(self.folder_path, self.details_file_name)
+        details_path = os.path.join(self.folder_path, self.detail_file_name)
         path_to_image = os.path.join(self.folder_path, img_name)
         relative_path = os.path.relpath(path_to_image, self.relative_path)
         data_to_add = [relative_path,
@@ -339,12 +341,12 @@ class ImageMaker:
             print(f"move_counter_clockwise {dist}")
         self.current_horizontal = destination_deg
 
-    def select_random_elements(self, positions):
-        if self.num_samples >= len(positions):
+    def select_random_elements(self, positons):
+        if self.num_samples >= len(positons):
             print("Liste der Lichtpinkte wurde nicht verändert")
-            return sorted(positions)
+            return sorted(positons)
         else:
-            return random.sample(positions, self.num_samples)
+            return random.sample(positons, self.num_samples)
 
     def start(self):
         start_time = time.time()
@@ -353,18 +355,16 @@ class ImageMaker:
         self.create_details_file()
         self.camera = self.cam_setup()
 
-        # einmal LEDs aufleuchten lassen (reine Spielerei)
+        # einmal LEDs aufleuchten lassen
         for i in range(self.leds_used):
             self.set_led(i)
-
-        one_level_up = int(140 / (self.height_levels - 1))  # berechnung der Höhenschritte
+        one_level_up = int(140 / (self.height_levels - 1))
         self.horizontal_pass()
         # schrittweise rauf
         for i in range(self.height_levels - 1 - self.current_height_level):
-            if self.table_rotations > 0:
-                # Starte die automatische Positionierung, muss bei jedem horizontalen Durchlauf neu initiiert werden
-                self.send_command_to_stage_on_air(OVR_START_001)
-            next_azimut(one_level_up)
+            # Starte die automatische Positionierung
+            self.send_command(OVR_START_001)
+            move_up(one_level_up)
             self.current_height_level += 1
             self.horizontal_pass()
 
@@ -396,3 +396,5 @@ class ImageMaker:
             self.current_horizontal = -153
             if self.table_rotations > 0:
                 self.rotate_stage_on_air()
+
+
