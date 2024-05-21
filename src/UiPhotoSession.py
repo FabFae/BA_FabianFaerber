@@ -9,7 +9,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
         self.positions = None
-        uic.loadUi('/home/pi/BA/src/UiPhotoSession.ui', self)
+        uic.loadUi('/home/pi/BA_FabianFaerber/src/UiPhotoSession.ui', self)
 
         # setup UI
         self.update_info()
@@ -27,7 +27,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def validate_table_rotations(self):
         # Die gültigen Werte, die table_rotations annehmen darf
-        valid_values = {2, 3, 4, 5, 6, 8, 9, 10, 12, 15, 18, 20, 24, 30, 36, 40, 45, 60, 72, 90, 120, 180, 360}
+        valid_values = {0, 2, 3, 4, 5, 6, 8, 9, 10, 12, 15, 18, 20, 24, 30, 36, 40, 45, 60, 72, 90, 120, 180, 360}
 
         # Der aktuelle Wert von table_rotations_spin
         current_value = self.table_rotations_spin.value()
@@ -38,7 +38,7 @@ class MainWindow(QtWidgets.QMainWindow):
             msg = QtWidgets.QMessageBox()
             msg.setIcon(QtWidgets.QMessageBox.Warning)
             msg.setText(f"Ungültiger Wert: {current_value}.")
-            msg.setInformativeText("Der Wert muss\n2, 3, 4, 5, 6, 8, 9, 10, 12,\n15, 18, 20, 24, 30, 36, 40, 45,\n"
+            msg.setInformativeText("Der Wert muss\n0, 2, 3, 4, 5, 6, 8, 9, 10, 12,\n15, 18, 20, 24, 30, 36, 40, 45,\n"
                                    "60, 72, 90, 120, 180 oder 360 sein.")
             msg.setWindowTitle("Ungültiger Wert")
             msg.setStandardButtons(QtWidgets.QMessageBox.Ok)
@@ -46,7 +46,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
             # Zurücksetzen des Werts von table_rotations_spin auf 1
             self.table_rotations_spin.blockSignals(True)  # Verhindere Signal beim Setzen des Werts
-            self.table_rotations_spin.setValue(1)
+            self.table_rotations_spin.setValue(0)
             self.table_rotations_spin.blockSignals(False)  # Erlaube Signale wieder
 
     def move_counter_clockwise(self):

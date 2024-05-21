@@ -105,8 +105,3 @@ def get_closest_light(angle: int):
     # Gebe den Index des Lichtwinkels zurück, der dem gegebenen Winkel am nächsten ist.
     return index_of_min
 
-
-num_points = 935
-# Liste der kleinsten Winkel zu den nächsten 10 Nachbarn für alle Punkte finden
-smallest_angles = find_smallest_angle(num_points)
-print(min(smallest_angles))
