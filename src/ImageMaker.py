@@ -10,6 +10,7 @@ import os
 import random
 import serial
 import time
+import sys
 
 from StepperMotor import StepperMotor
 from utils import spherical_to_stereographic, get_angles
@@ -62,13 +63,16 @@ def move_clockwise(degrees: int):
     for i in range(degrees * STEPS_PER_DEGREE_VERTICAL):
         rotate_motor(horizontal=True, invert_direction=True)
 
+
 def move_counter_clockwise(degrees: int):
     for i in range(degrees * STEPS_PER_DEGREE_VERTICAL):
         rotate_motor(horizontal=True)
 
+
 def move_up(degrees: int):
     for i in range(degrees * STEPS_PER_DEGREE_HORIZONTAL):
         rotate_motor(horizontal=False)
+
 
 def move_down(degrees: int):
     for i in range(degrees * STEPS_PER_DEGREE_HORIZONTAL):
@@ -144,34 +148,66 @@ class ImageMaker:
                                  stopbits=1,
                                  timeout=1)
         if self.table_rotations > 0:
-            print("run setup_stage()")
+            print(f"run setup_stage() for {self.table_rotations} rotations")
             self.setup_stage()
         self.go_to_starting_height(starting_height)
 
-
-        #self.light_positions = [[-140, 30.19, 53]]
+        # self.light_positions = [[-140, 30.19, 53]]
         print("Light Positions:")
-        print(self.light_positions)               
-        
+        print(self.light_positions)
 
-       
-    def setup_stage(self):                
+    def setup_stage(self):
         # Laden der aktuell gespeicherten Einstellungen
         self.send_command(OVR_LOADPREF)
-        # Festlegen der Schritte (72° pro Schritt)
-        self.send_command(OVR_SETSTEPS_005)
-        # Rotationssinn festlegen (im Uhrzeigersinn)
+
+        # Festlegen der Schritte pro Rotation basierend auf self.table_rotations
+        step_commands = {
+            2: "OVR_SETSTEPS_002",
+            3: "OVR_SETSTEPS_003",
+            4: "OVR_SETSTEPS_004",
+            5: "OVR_SETSTEPS_005",
+            6: "OVR_SETSTEPS_006",
+            8: "OVR_SETSTEPS_008",
+            9: "OVR_SETSTEPS_009",
+            10: "OVR_SETSTEPS_010",
+            12: "OVR_SETSTEPS_012",
+            15: "OVR_SETSTEPS_015",
+            18: "OVR_SETSTEPS_018",
+            20: "OVR_SETSTEPS_020",
+            24: "OVR_SETSTEPS_024",
+            30: "OVR_SETSTEPS_030",
+            36: "OVR_SETSTEPS_036",
+            40: "OVR_SETSTEPS_040",
+            45: "OVR_SETSTEPS_045",
+            60: "OVR_SETSTEPS_060",
+            72: "OVR_SETSTEPS_072",
+            90: "OVR_SETSTEPS_090",
+            120: "OVR_SETSTEPS_120",
+            180: "OVR_SETSTEPS_180",
+            360: "OVR_SETSTEPS_360",
+        }
+
+        # Überprüfung, ob der Wert in self.table_rotations einer gültigen Einstellung entspricht
+        if self.table_rotations in step_commands:
+            self.send_command(step_commands[self.table_rotations])
+        else:
+            raise ValueError("Ungültiger Wert für table_rotations: {}".format(self.table_rotations))
+            sys.exit(1) # Programm endet bei unglültigem Rotationswert.
+
+        # Rotationsinn festlegen (im Uhrzeigersinn)
         self.send_command(OVR_SHOOTTURN_000)
+
         # Betriebsmodus auf STOPSHOOT setzen
         self.send_command(OVR_STEPSHOOT_002)
+
         # Speichere die Einstellungen auf der Vorrichtung
         self.send_command(OVR_SAVEPREF)
+
         # Starte die automatische Positionierung
         self.send_command(OVR_START_001)
-        
+
         print("stage-setup complete")
-        
-   
+
     def go_to_starting_height(self, steps_up):
         if self.height_levels - 1 > 0:
             dist_per_height_lvl = int(140 / (self.height_levels - 1))
@@ -214,7 +250,7 @@ class ImageMaker:
 
         finally:
             # Schließe die serielle Verbindung, wenn du fertig bist
-            #self.ser.close()
+            # self.ser.close()
             pass
 
     # Funktion, um Befehle an die Stage zu senden
@@ -396,5 +432,3 @@ class ImageMaker:
             self.current_horizontal = -153
             if self.table_rotations > 0:
                 self.rotate_stage_on_air()
-
-

@@ -23,16 +23,39 @@ class MainWindow(QtWidgets.QMainWindow):
         self.start_button.clicked.connect(self.start)
         self.counter_clockwise_button.clicked.connect(self.move_counter_clockwise)
         self.down_button.clicked.connect(self.move_down)
+        self.table_rotations_spin.valueChanged.connect(self.validate_table_rotations)
+
+    def validate_table_rotations(self):
+        # Die gültigen Werte, die table_rotations annehmen darf
+        valid_values = {2, 3, 4, 5, 6, 8, 9, 10, 12, 15, 18, 20, 24, 30, 36, 40, 45, 60, 72, 90, 120, 180, 360}
+
+        # Der aktuelle Wert von table_rotations_spin
+        current_value = self.table_rotations_spin.value()
+
+        # Wenn der aktuelle Wert ungültig ist, zeigen Sie ein Popup an und setzen Sie den Wert zurück auf 1
+        if current_value not in valid_values:
+            # Erstellen des Pop-up-Fensters mit Warnung
+            msg = QtWidgets.QMessageBox()
+            msg.setIcon(QtWidgets.QMessageBox.Warning)
+            msg.setText(f"Ungültiger Wert: {current_value}.")
+            msg.setInformativeText("Der Wert muss\n2, 3, 4, 5, 6, 8, 9, 10, 12,\n15, 18, 20, 24, 30, 36, 40, 45,\n"
+                                   "60, 72, 90, 120, 180 oder 360 sein.")
+            msg.setWindowTitle("Ungültiger Wert")
+            msg.setStandardButtons(QtWidgets.QMessageBox.Ok)
+            msg.exec_()  # Das Pop-up-Fenster wird hier angezeigt
+
+            # Zurücksetzen des Werts von table_rotations_spin auf 1
+            self.table_rotations_spin.blockSignals(True)  # Verhindere Signal beim Setzen des Werts
+            self.table_rotations_spin.setValue(1)
+            self.table_rotations_spin.blockSignals(False)  # Erlaube Signale wieder
 
     def move_counter_clockwise(self):
         # im = ImageMaker()
         move_counter_clockwise(self.counter_clockwise_spin.value())
 
-
     def move_down(self):
         # im = ImageMaker()
         move_down(self.down_spin.value())
-
 
     def open_file_dialog(self):
         options = QtWidgets.QFileDialog.Options()
@@ -83,7 +106,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.img_size_spin.setValue(file_data["img_size"])
                 self.table_rotations_spin.setValue(file_data["table_rotations"])
                 self.height_levels_spin.setValue(file_data["height_levels"])
-                self.starting_height_spin.setValue(file_data["starting_height"]) 
+                self.starting_height_spin.setValue(file_data["starting_height"])
                 self.positions = file_data["positions"]
 
                 # prüfen ob start_index das letzte Bild in der horizontalen war
@@ -139,4 +162,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
