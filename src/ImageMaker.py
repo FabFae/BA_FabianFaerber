@@ -396,4 +396,6 @@ class ImageMaker:
             if self.table_rotations > 0:
                 self.rotate_stage_on_air()
 
+im = ImageMaker(positions=[[-140, 0.0, 20]])
+im.start()
 
