@@ -99,7 +99,7 @@ class ImageMaker:
                  exposure_time: int = 8000000,
                  img_size: int = 1920,
                  table_rotations: int = 0,
-                 height_levels: int = 3,
+                 height_levels: int = 2,
                  starting_height: int = 0,
                  positions=None
                  ):
@@ -206,7 +206,7 @@ class ImageMaker:
         # Starte die automatische Positionierung
         self.send_command(OVR_START_001)
 
-        print("stage-setup complete")
+        print("----------> stage-setup complete")
 
     def go_to_starting_height(self, steps_up):
         if self.height_levels - 1 > 0:
@@ -239,6 +239,7 @@ class ImageMaker:
             json.dump(metadata, f, ensure_ascii=False, indent=4)
 
     def rotate_stage_on_air(self):
+        print("----------> rotate stage")
         # Öffne die serielle Verbindung, wenn sie nicht bereits offen ist
         if not self.ser.is_open:
             self.ser.open()
