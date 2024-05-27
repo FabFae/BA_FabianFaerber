@@ -183,52 +183,51 @@ class ImageMaker:
     def setup_stage(self):
         print("---------> start set")
 
-        def setup_stage(self):
-            print("---------> start set")
-            # Laden der aktuell gespeicherten Einstellungen
-            self.send_command(OVR_LOADPREF)
-            # Festlegen der Schritte pro Rotation basierend auf self.table_rotations
-            step_commands = {
-                2: OVR_SETSTEPS_002,
-                3: OVR_SETSTEPS_003,
-                4: OVR_SETSTEPS_004,
-                5: OVR_SETSTEPS_005,
-                6: OVR_SETSTEPS_006,
-                8: OVR_SETSTEPS_008,
-                9: OVR_SETSTEPS_009,
-                10: OVR_SETSTEPS_010,
-                12: OVR_SETSTEPS_012,
-                15: OVR_SETSTEPS_015,
-                18: OVR_SETSTEPS_018,
-                20: OVR_SETSTEPS_020,
-                24: OVR_SETSTEPS_024,
-                30: OVR_SETSTEPS_030,
-                36: OVR_SETSTEPS_036,
-                40: OVR_SETSTEPS_040,
-                45: OVR_SETSTEPS_045,
-                60: OVR_SETSTEPS_060,
-                72: OVR_SETSTEPS_072,
-                90: OVR_SETSTEPS_090,
-                120: OVR_SETSTEPS_120,
-                180: OVR_SETSTEPS_180,
-                360: OVR_SETSTEPS_360,
-            }
+        print("---------> start set")
+        # Laden der aktuell gespeicherten Einstellungen
+        self.send_command(OVR_LOADPREF)
+        # Festlegen der Schritte pro Rotation basierend auf self.table_rotations
+        step_commands = {
+            2: OVR_SETSTEPS_002,
+            3: OVR_SETSTEPS_003,
+            4: OVR_SETSTEPS_004,
+            5: OVR_SETSTEPS_005,
+            6: OVR_SETSTEPS_006,
+            8: OVR_SETSTEPS_008,
+            9: OVR_SETSTEPS_009,
+            10: OVR_SETSTEPS_010,
+            12: OVR_SETSTEPS_012,
+            15: OVR_SETSTEPS_015,
+            18: OVR_SETSTEPS_018,
+            20: OVR_SETSTEPS_020,
+            24: OVR_SETSTEPS_024,
+            30: OVR_SETSTEPS_030,
+            36: OVR_SETSTEPS_036,
+            40: OVR_SETSTEPS_040,
+            45: OVR_SETSTEPS_045,
+            60: OVR_SETSTEPS_060,
+            72: OVR_SETSTEPS_072,
+            90: OVR_SETSTEPS_090,
+            120: OVR_SETSTEPS_120,
+            180: OVR_SETSTEPS_180,
+            360: OVR_SETSTEPS_360,
+        }
 
-            self.send_command(OVR_SETSTEPS_005)
+        self.send_command(OVR_SETSTEPS_005)
 
-            # Rotationsinn festlegen (im Uhrzeigersinn)
-            self.send_command(OVR_SHOOTTURN_000)
+        # Rotationsinn festlegen (im Uhrzeigersinn)
+        self.send_command(OVR_SHOOTTURN_000)
 
-            # Betriebsmodus auf STOPSHOOT setzen
-            self.send_command(OVR_STEPSHOOT_002)
+        # Betriebsmodus auf STOPSHOOT setzen
+        self.send_command(OVR_STEPSHOOT_002)
 
-            # Speichere die Einstellungen auf der Vorrichtung
-            self.send_command(OVR_SAVEPREF)
+        # Speichere die Einstellungen auf der Vorrichtung
+        self.send_command(OVR_SAVEPREF)
 
-            # Starte die automatische Positionierung
-            self.send_command(OVR_START_001)
+        # Starte die automatische Positionierung
+        self.send_command(OVR_START_001)
 
-            print("----------> stage-setup complete")
+        print("----------> stage-setup complete")
 
     def go_to_starting_height(self, steps_up):
         if self.height_levels - 1 > 0:
