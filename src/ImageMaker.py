@@ -96,8 +96,8 @@ def move_up(degrees: int):
         rotate_motor(horizontal=False)
 
 
-def move_down(degrees: int):
-    for i in range(degrees * STEPS_PER_DEGREE_HORIZONTAL):
+def move_down(units: int):
+    for i in range(units * STEPS_PER_DEGREE_HORIZONTAL):
         rotate_motor(horizontal=False, invert_direction=True)
 
 
@@ -476,5 +476,5 @@ class ImageMaker:
             self.position_index += 1
 
 
-im = ImageMaker(positions=[[-140, 30.19, 53]])
-im.start()
+# im = ImageMaker(positions=[[-140, 30.19, 53]])
+# im.start()
