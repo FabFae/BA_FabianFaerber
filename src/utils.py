@@ -81,7 +81,7 @@ def get_angles(num_pts):
     return_list = []
     for pair in points:
         closest_light_index = get_closest_light(pair[1])
-        return_list.append([pair[0], PHYSICAL_LED_ANGLES[closest_light_index], closest_light_index])
+        return_list.append([int(round(pair[0])), PHYSICAL_LED_ANGLES[closest_light_index], closest_light_index])
     return sorted(return_list)
 
 
