@@ -78,7 +78,7 @@
           <enum>QAbstractSpinBox::NoButtons</enum>
          </property>
          <property name="maximum">
-          <number>15</number>
+          <number>360</number>
          </property>
          <property name="value">
           <number>0</number>
@@ -118,7 +118,7 @@
           <number>1920</number>
          </property>
          <property name="value">
-          <number>224</number>
+          <number>1920</number>
          </property>
         </widget>
        </item>
@@ -303,7 +303,7 @@
       </widget>
      </item>
      <item>
-      <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,0,0" rowminimumheight="0,0,0">
+      <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,0" rowminimumheight="0,0">
        <item row="0" column="1">
         <widget class="QPushButton" name="counter_clockwise_button">
          <property name="text">
@@ -346,7 +346,7 @@
      <x>0</x>
      <y>0</y>
      <width>239</width>
-     <height>18</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>
