@@ -192,7 +192,7 @@ class ImageMaker:
             self.send_command(step_commands[self.table_rotations])
         else:
             raise ValueError("Ungültiger Wert für table_rotations: {}".format(self.table_rotations))
-            sys.exit(1) # Programm endet bei unglültigem Rotationswert.
+            sys.exit(1)  # Programm endet bei unglültigem Rotationswert.
 
         # Rotationsinn festlegen (im Uhrzeigersinn)
         self.send_command(OVR_SHOOTTURN_000)
@@ -432,3 +432,6 @@ class ImageMaker:
             self.current_horizontal = -153
             if self.table_rotations > 0:
                 self.rotate_stage_on_air()
+
+
+im = ImageMaker(positions=[[-140, 30.19, 53]])

@@ -104,4 +104,3 @@ def get_closest_light(angle: int):
 
     # Gebe den Index des Lichtwinkels zurück, der dem gegebenen Winkel am nächsten ist.
     return index_of_min
-
