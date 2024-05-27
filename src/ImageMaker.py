@@ -10,7 +10,6 @@ import os
 import random
 import serial
 import time
-import sys
 
 from StepperMotor import StepperMotor
 from utils import spherical_to_stereographic, get_angles
@@ -22,30 +21,7 @@ STEPS_PER_DEGREE_HORIZONTAL = 100
 OVR_STOP = b'OVR_STOP\r\n'
 OVR_LOADPREF = b'OVR_LOADPREF\r\n'
 OVR_SAVEPREF = b'OVR_SAVEPREF\r\n'
-
-OVR_SETSTEPS_002 = b"OVR_SETSTEPS_002\r\n"
-OVR_SETSTEPS_003 = b"OVR_SETSTEPS_003\r\n"
-OVR_SETSTEPS_004 = b"OVR_SETSTEPS_004\r\n"
-OVR_SETSTEPS_005 = b"OVR_SETSTEPS_005\r\n"
-OVR_SETSTEPS_006 = b"OVR_SETSTEPS_006\r\n"
-OVR_SETSTEPS_008 = b"OVR_SETSTEPS_008\r\n"
-OVR_SETSTEPS_009 = b"OVR_SETSTEPS_009\r\n"
-OVR_SETSTEPS_010 = b"OVR_SETSTEPS_010\r\n"
-OVR_SETSTEPS_012 = b"OVR_SETSTEPS_012\r\n"
-OVR_SETSTEPS_015 = b"OVR_SETSTEPS_015\r\n"
-OVR_SETSTEPS_018 = b"OVR_SETSTEPS_018\r\n"
-OVR_SETSTEPS_020 = b"OVR_SETSTEPS_020\r\n"
-OVR_SETSTEPS_024 = b"OVR_SETSTEPS_024\r\n"
-OVR_SETSTEPS_030 = b"OVR_SETSTEPS_030\r\n"
-OVR_SETSTEPS_036 = b"OVR_SETSTEPS_036\r\n"
-OVR_SETSTEPS_040 = b"OVR_SETSTEPS_040\r\n"
-OVR_SETSTEPS_045 = b"OVR_SETSTEPS_045\r\n"
-OVR_SETSTEPS_060 = b"OVR_SETSTEPS_060\r\n"
-OVR_SETSTEPS_072 = b"OVR_SETSTEPS_072\r\n"
-OVR_SETSTEPS_090 = b"OVR_SETSTEPS_090\r\n"
-OVR_SETSTEPS_120 = b"OVR_SETSTEPS_120\r\n"
-OVR_SETSTEPS_180 = b"OVR_SETSTEPS_180\r\n"
-OVR_SETSTEPS_360 = b"OVR_SETSTEPS_360\r\n"
+OVR_SETSTEPS_005 = b'OVR_SETSTEPS_005\r\n'  # Annahme: Dieser Befehl setzt 72° Schritte
 OVR_SHOOTTURN_000 = b'OVR_SHOOTTURN_000\r\n'
 OVR_STEPSHOOT_002 = b'OVR_STEPSHOOT_002\r\n'
 OVR_START_001 = b'OVR_START_001\r\n'
@@ -121,8 +97,8 @@ class ImageMaker:
                  start_index: int = 0,
                  exposure_time: int = 8000000,
                  img_size: int = 1920,
-                 table_rotations: int = 2,
-                 height_levels: int = 2,
+                 table_rotations: int = 0,
+                 height_levels: int = 3,
                  starting_height: int = 0,
                  positions=None
                  ):
@@ -147,7 +123,6 @@ class ImageMaker:
         self.camera = None
 
         self.table_rotations = table_rotations
-        print(f"self.table_rotations = {self.table_rotations}")
 
         self.num_leds = 90  # Anzahl LEDs am LED-Streifen
         self.leds_used = 67  # Anzahl der verwendeten LEDs
@@ -172,7 +147,7 @@ class ImageMaker:
                                  stopbits=1,
                                  timeout=1)
         if self.table_rotations > 0:
-            print(f"run setup_stage() for {self.table_rotations} rotations")
+            print("run setup_stage()")
             self.setup_stage()
         self.go_to_starting_height(starting_height)
 
@@ -182,24 +157,19 @@ class ImageMaker:
 
     def setup_stage(self):
         # Laden der aktuell gespeicherten Einstellungen
-        self.send_command_to_stage_on_air(OVR_LOADPREF)
-        # Festlegen der Schritte (72° pro Schritt da 360/5 = 72)
-        self.send_command_to_stage_on_air(OVR_SETSTEPS_005)
+        self.send_command(OVR_LOADPREF)
+        # Festlegen der Schritte (72° pro Schritt)
+        self.send_command(OVR_SETSTEPS_005)
         # Rotationssinn festlegen (im Uhrzeigersinn)
-        self.send_command_to_stage_on_air(OVR_SHOOTTURN_000)
+        self.send_command(OVR_SHOOTTURN_000)
         # Betriebsmodus auf STOPSHOOT setzen
-        self.send_command_to_stage_on_air(OVR_STEPSHOOT_002)
+        self.send_command(OVR_STEPSHOOT_002)
         # Speichere die Einstellungen auf der Vorrichtung
-        self.send_command_to_stage_on_air(OVR_SAVEPREF)
+        self.send_command(OVR_SAVEPREF)
         # Starte die automatische Positionierung
-        self.send_command_to_stage_on_air(OVR_START_001)
+        self.send_command(OVR_START_001)
 
         print("stage-setup complete")
-
-    def send_command_to_stage_on_air(self, command):
-        self.ser.write(command)
-        response = self.ser.readline()
-        print(response)
 
     def go_to_starting_height(self, steps_up):
         if self.height_levels - 1 > 0:
@@ -232,13 +202,12 @@ class ImageMaker:
             json.dump(metadata, f, ensure_ascii=False, indent=4)
 
     def rotate_stage_on_air(self):
-        print("----------> rotate stage")
         # Öffne die serielle Verbindung, wenn sie nicht bereits offen ist
         if not self.ser.is_open:
             self.ser.open()
 
         try:
-            # Befehle senden: Rotation um definierten Winkel durchführen 
+            # Befehle senden: Rotation um definierten Winkel durchführen
             self.send_command(OVR_GOON)
             time.sleep(.5)  # Wartezeit abhängig von der Rotationsgeschwindigkeit
 
@@ -248,6 +217,10 @@ class ImageMaker:
             pass
 
     # Funktion, um Befehle an die Stage zu senden
+    def send_command(self, command):
+        self.ser.write(command)
+        response = self.ser.readline()
+        print(response)
 
     def cam_setup(self):
         # Kamera konfigurieren und starten
@@ -424,5 +397,3 @@ class ImageMaker:
                 self.rotate_stage_on_air()
 
 
-im = ImageMaker(positions=[[-140, 30.19, 53]])
-im.start()
