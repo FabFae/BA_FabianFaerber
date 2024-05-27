@@ -183,7 +183,6 @@ class ImageMaker:
     def setup_stage(self):
         print("---------> start set")
 
-        print("---------> start set")
         # Laden der aktuell gespeicherten Einstellungen
         self.send_command(OVR_LOADPREF)
         # Festlegen der Schritte pro Rotation basierend auf self.table_rotations
@@ -277,6 +276,7 @@ class ImageMaker:
 
     # Funktion, um Befehle an die Stage zu senden
     def send_command(self, command):
+        print(f"sennd_commadn {command}")
         self.ser.write(command)
         response = self.ser.readline()
         print(response)
