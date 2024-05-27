@@ -22,7 +22,6 @@ STEPS_PER_DEGREE_HORIZONTAL = 100
 OVR_STOP = b'OVR_STOP\r\n'
 OVR_LOADPREF = b'OVR_LOADPREF\r\n'
 OVR_SAVEPREF = b'OVR_SAVEPREF\r\n'
-
 OVR_SETSTEPS_002 = b"OVR_SETSTEPS_002\r\n"
 OVR_SETSTEPS_003 = b"OVR_SETSTEPS_003\r\n"
 OVR_SETSTEPS_004 = b"OVR_SETSTEPS_004\r\n"
@@ -183,8 +182,55 @@ class ImageMaker:
     def setup_stage(self):
         # Laden der aktuell gespeicherten Einstellungen
         self.send_command_to_stage_on_air(OVR_LOADPREF)
-        # Festlegen der Schritte (72° pro Schritt da 360/5 = 72)
-        self.send_command_to_stage_on_air(OVR_SETSTEPS_005)
+
+        # Einstellen der Rotationswinkel
+        if self.table_rotations == 2:
+            self.send_command_to_stage_on_air(OVR_SETSTEPS_002)
+        if self.table_rotations == 3:
+            self.send_command_to_stage_on_air(OVR_SETSTEPS_003)
+        if self.table_rotations == 4:
+            self.send_command_to_stage_on_air(OVR_SETSTEPS_004)
+        if self.table_rotations == 5:
+            self.send_command_to_stage_on_air(OVR_SETSTEPS_005)
+        # if self.table_rotations == 6:
+        #     OVR_SETSTEPS_006 = b"OVR_SETSTEPS_006\r\n"
+        # if self.table_rotations == 8:
+        #     OVR_SETSTEPS_008 = b"OVR_SETSTEPS_008\r\n"
+        # if self.table_rotations == 9:
+        #     OVR_SETSTEPS_009 = b"OVR_SETSTEPS_009\r\n"
+        # if self.table_rotations == 10:
+        #     OVR_SETSTEPS_010 = b"OVR_SETSTEPS_010\r\n"
+        # if self.table_rotations == 12:
+        #     OVR_SETSTEPS_012 = b"OVR_SETSTEPS_012\r\n"
+        # if self.table_rotations == 15:
+        #     OVR_SETSTEPS_015 = b"OVR_SETSTEPS_015\r\n"
+        # if self.table_rotations == 18:
+        #     OVR_SETSTEPS_018 = b"OVR_SETSTEPS_018\r\n"
+        # if self.table_rotations == 20:
+        #     OVR_SETSTEPS_020 = b"OVR_SETSTEPS_020\r\n"
+        # if self.table_rotations == 24:
+        #     OVR_SETSTEPS_024 = b"OVR_SETSTEPS_024\r\n"
+        # if self.table_rotations == 30:
+        #     OVR_SETSTEPS_030 = b"OVR_SETSTEPS_030\r\n"
+        # if self.table_rotations == 36:
+        #     OVR_SETSTEPS_036 = b"OVR_SETSTEPS_036\r\n"
+        # if self.table_rotations == 40:
+        #     OVR_SETSTEPS_040 = b"OVR_SETSTEPS_040\r\n"
+        # if self.table_rotations == 45:
+        #     OVR_SETSTEPS_045 = b"OVR_SETSTEPS_045\r\n"
+        # if self.table_rotations == 60:
+        #     OVR_SETSTEPS_060 = b"OVR_SETSTEPS_060\r\n"
+        # if self.table_rotations == 72:
+        #     OVR_SETSTEPS_072 = b"OVR_SETSTEPS_072\r\n"
+        # if self.table_rotations == 90:
+        #     OVR_SETSTEPS_090 = b"OVR_SETSTEPS_090\r\n"
+        # if self.table_rotations == 120:
+        #     OVR_SETSTEPS_120 = b"OVR_SETSTEPS_120\r\n"
+        # if self.table_rotations == 180:
+        #     OVR_SETSTEPS_180 = b"OVR_SETSTEPS_180\r\n"
+        # if self.table_rotations == 360:
+        #     OVR_SETSTEPS_360 = b"OVR_SETSTEPS_360\r\n"
+
         # Rotationssinn festlegen (im Uhrzeigersinn)
         self.send_command_to_stage_on_air(OVR_SHOOTTURN_000)
         # Betriebsmodus auf STOPSHOOT setzen
@@ -239,7 +285,7 @@ class ImageMaker:
 
         try:
             # Befehle senden: Rotation um definierten Winkel durchführen
-            self.send_command(OVR_GOON)
+            self.send_command_to_stage_on_air(OVR_GOON)
             time.sleep(.5)  # Wartezeit abhängig von der Rotationsgeschwindigkeit
 
         finally:
@@ -389,7 +435,7 @@ class ImageMaker:
         # schrittweise rauf
         for i in range(self.height_levels - 1 - self.current_height_level):
             # Starte die automatische Positionierung
-            self.send_command(OVR_START_001)
+            self.send_command_to_stage_on_air(OVR_START_001)
             move_up(one_level_up)
             self.current_height_level += 1
             self.horizontal_pass()
