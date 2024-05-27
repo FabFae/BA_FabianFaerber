@@ -447,28 +447,33 @@ class ImageMaker:
         time_passed(start_time)
 
     def horizontal_pass(self):
-        for j in range(self.table_rotations + 1):
-            print(f"rotation {j}")
-            # abfahren aller positionen
-            for i in range(self.position_index, len(self.light_positions)):
-                # wenn self.position_index von json Datei geladen wurde, dann ist der Wert =! 0
-                pos = self.light_positions[i]
-                self.go_to_horizontal(pos[0])
-                time.sleep(.075)
-                self.set_led(self.light_positions[self.position_index][2])
-                img_name = self.take_picture()
-                self.add_labels(img_name)
-                self.save_details(img_name)
-                self.save_metadata()
-                self.position_index += 1
+        if self.table_rotations == 0:
+            self.take_images()
+        else:
+            for j in range(self.table_rotations):
+                print(f"rotation {j}")
+                # abfahren aller positionen
+                self.take_images()
 
-            # zurück zur Startposition und stage drehen
-            self.position_index = 0
-            self.pixels.fill((0, 0, 0))
-            move_counter_clockwise(self.current_horizontal + 155)
-            self.current_horizontal = -153
-            if self.table_rotations > 0:
-                self.rotate_stage_on_air()
+                # zurück zur Startposition und stage drehen
+                self.position_index = 0
+                self.pixels.fill((0, 0, 0))
+                move_counter_clockwise(self.current_horizontal + 155)
+                self.current_horizontal = -153
+                if self.table_rotations > 0:
+                    self.rotate_stage_on_air()
+    def take_images(self):
+        for i in range(self.position_index, len(self.light_positions)):
+            # wenn self.position_index von json Datei geladen wurde, dann ist der Wert =! 0
+            pos = self.light_positions[i]
+            self.go_to_horizontal(pos[0])
+            time.sleep(.075)
+            self.set_led(self.light_positions[self.position_index][2])
+            img_name = self.take_picture()
+            self.add_labels(img_name)
+            self.save_details(img_name)
+            self.save_metadata()
+            self.position_index += 1
 
 
 im = ImageMaker(positions=[[-140, 30.19, 53]])
