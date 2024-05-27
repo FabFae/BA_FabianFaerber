@@ -447,7 +447,8 @@ class ImageMaker:
         time_passed(start_time)
 
     def horizontal_pass(self):
-        for _ in range(self.table_rotations + 1):
+        for j in range(self.table_rotations + 1):
+            print(f"rotation {j}")
             # abfahren aller positionen
             for i in range(self.position_index, len(self.light_positions)):
                 # wenn self.position_index von json Datei geladen wurde, dann ist der Wert =! 0
