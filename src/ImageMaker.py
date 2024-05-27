@@ -98,7 +98,7 @@ class ImageMaker:
                  start_index: int = 0,
                  exposure_time: int = 8000000,
                  img_size: int = 1920,
-                 table_rotations: int = 0,
+                 table_rotations: int = 2,
                  height_levels: int = 2,
                  starting_height: int = 0,
                  positions=None
@@ -157,6 +157,7 @@ class ImageMaker:
         print(self.light_positions)
 
     def setup_stage(self):
+        print("---------> start set")
         # Laden der aktuell gespeicherten Einstellungen
         self.send_command(OVR_LOADPREF)
 
@@ -187,12 +188,7 @@ class ImageMaker:
             360: "OVR_SETSTEPS_360",
         }
 
-        # Überprüfung, ob der Wert in self.table_rotations einer gültigen Einstellung entspricht
-        if self.table_rotations in step_commands:
-            self.send_command(step_commands[self.table_rotations])
-        else:
-            raise ValueError("Ungültiger Wert für table_rotations: {}".format(self.table_rotations))
-            sys.exit(1)  # Programm endet bei unglültigem Rotationswert.
+        self.send_command(OVR_SETSTEPS_005)
 
         # Rotationsinn festlegen (im Uhrzeigersinn)
         self.send_command(OVR_SHOOTTURN_000)
@@ -436,3 +432,4 @@ class ImageMaker:
 
 
 im = ImageMaker(positions=[[-140, 30.19, 53]])
+im.start()
