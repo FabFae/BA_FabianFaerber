@@ -22,7 +22,30 @@ STEPS_PER_DEGREE_HORIZONTAL = 100
 OVR_STOP = b'OVR_STOP\r\n'
 OVR_LOADPREF = b'OVR_LOADPREF\r\n'
 OVR_SAVEPREF = b'OVR_SAVEPREF\r\n'
-OVR_SETSTEPS_005 = b'OVR_SETSTEPS_005\r\n'  # Annahme: Dieser Befehl setzt 72° Schritte
+
+OVR_SETSTEPS_002 = b"OVR_SETSTEPS_002\r\n"
+OVR_SETSTEPS_003 = b"OVR_SETSTEPS_003\r\n"
+OVR_SETSTEPS_004 = b"OVR_SETSTEPS_004\r\n"
+OVR_SETSTEPS_005 = b"OVR_SETSTEPS_005\r\n"
+OVR_SETSTEPS_006 = b"OVR_SETSTEPS_006\r\n"
+OVR_SETSTEPS_008 = b"OVR_SETSTEPS_008\r\n"
+OVR_SETSTEPS_009 = b"OVR_SETSTEPS_009\r\n"
+OVR_SETSTEPS_010 = b"OVR_SETSTEPS_010\r\n"
+OVR_SETSTEPS_012 = b"OVR_SETSTEPS_012\r\n"
+OVR_SETSTEPS_015 = b"OVR_SETSTEPS_015\r\n"
+OVR_SETSTEPS_018 = b"OVR_SETSTEPS_018\r\n"
+OVR_SETSTEPS_020 = b"OVR_SETSTEPS_020\r\n"
+OVR_SETSTEPS_024 = b"OVR_SETSTEPS_024\r\n"
+OVR_SETSTEPS_030 = b"OVR_SETSTEPS_030\r\n"
+OVR_SETSTEPS_036 = b"OVR_SETSTEPS_036\r\n"
+OVR_SETSTEPS_040 = b"OVR_SETSTEPS_040\r\n"
+OVR_SETSTEPS_045 = b"OVR_SETSTEPS_045\r\n"
+OVR_SETSTEPS_060 = b"OVR_SETSTEPS_060\r\n"
+OVR_SETSTEPS_072 = b"OVR_SETSTEPS_072\r\n"
+OVR_SETSTEPS_090 = b"OVR_SETSTEPS_090\r\n"
+OVR_SETSTEPS_120 = b"OVR_SETSTEPS_120\r\n"
+OVR_SETSTEPS_180 = b"OVR_SETSTEPS_180\r\n"
+OVR_SETSTEPS_360 = b"OVR_SETSTEPS_360\r\n"
 OVR_SHOOTTURN_000 = b'OVR_SHOOTTURN_000\r\n'
 OVR_STEPSHOOT_002 = b'OVR_STEPSHOOT_002\r\n'
 OVR_START_001 = b'OVR_START_001\r\n'
@@ -124,6 +147,7 @@ class ImageMaker:
         self.camera = None
 
         self.table_rotations = table_rotations
+        print(f"self.table_rotations = {self.table_rotations}")
 
         self.num_leds = 90  # Anzahl LEDs am LED-Streifen
         self.leds_used = 67  # Anzahl der verwendeten LEDs
@@ -165,29 +189,29 @@ class ImageMaker:
             self.send_command(OVR_LOADPREF)
             # Festlegen der Schritte pro Rotation basierend auf self.table_rotations
             step_commands = {
-                2: b"OVR_SETSTEPS_002\r\n",
-                3: b"OVR_SETSTEPS_003\r\n",
-                4: b"OVR_SETSTEPS_004\r\n",
-                5: b"OVR_SETSTEPS_005\r\n",
-                6: b"OVR_SETSTEPS_006\r\n",
-                8: b"OVR_SETSTEPS_008\r\n",
-                9: b"OVR_SETSTEPS_009\r\n",
-                10: b"OVR_SETSTEPS_010\r\n",
-                12: b"OVR_SETSTEPS_012\r\n",
-                15: b"OVR_SETSTEPS_015\r\n",
-                18: b"OVR_SETSTEPS_018\r\n",
-                20: b"OVR_SETSTEPS_020\r\n",
-                24: b"OVR_SETSTEPS_024\r\n",
-                30: b"OVR_SETSTEPS_030\r\n",
-                36: b"OVR_SETSTEPS_036\r\n",
-                40: b"OVR_SETSTEPS_040\r\n",
-                45: b"OVR_SETSTEPS_045\r\n",
-                60: b"OVR_SETSTEPS_060\r\n",
-                72: b"OVR_SETSTEPS_072\r\n",
-                90: b"OVR_SETSTEPS_090\r\n",
-                120: b"OVR_SETSTEPS_120\r\n",
-                180: b"OVR_SETSTEPS_180\r\n",
-                360: b"OVR_SETSTEPS_360\r\n",
+                2: OVR_SETSTEPS_002,
+                3: OVR_SETSTEPS_003,
+                4: OVR_SETSTEPS_004,
+                5: OVR_SETSTEPS_005,
+                6: OVR_SETSTEPS_006,
+                8: OVR_SETSTEPS_008,
+                9: OVR_SETSTEPS_009,
+                10: OVR_SETSTEPS_010,
+                12: OVR_SETSTEPS_012,
+                15: OVR_SETSTEPS_015,
+                18: OVR_SETSTEPS_018,
+                20: OVR_SETSTEPS_020,
+                24: OVR_SETSTEPS_024,
+                30: OVR_SETSTEPS_030,
+                36: OVR_SETSTEPS_036,
+                40: OVR_SETSTEPS_040,
+                45: OVR_SETSTEPS_045,
+                60: OVR_SETSTEPS_060,
+                72: OVR_SETSTEPS_072,
+                90: OVR_SETSTEPS_090,
+                120: OVR_SETSTEPS_120,
+                180: OVR_SETSTEPS_180,
+                360: OVR_SETSTEPS_360,
             }
 
             self.send_command(OVR_SETSTEPS_005)
