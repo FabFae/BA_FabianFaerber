@@ -450,7 +450,7 @@ class ImageMaker:
         if self.table_rotations == 0:
             self.take_images()
         else:
-            for j in range(self.table_rotations):
+            for j in range(self.table_rotations - 1):
                 print(f"rotation {j}")
                 # abfahren aller positionen
                 self.take_images()
